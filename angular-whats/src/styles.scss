@@ -1,0 +1,20 @@
+/* You can add global styles to this file, and also import other style files */
+@use 'colors' as *; //Tudo que está dentro de colors.scss pode ser usado aqui, como se fosse um import
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@400;500;600;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+.red {
+  background-color: red;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: $background-3;
+  font-size: 1.4rem;
+
+  * {
+    box-sizing: border-box;
+    color: $font;
+    font-family: 'Dosis', sans-serif;
+  }
+}

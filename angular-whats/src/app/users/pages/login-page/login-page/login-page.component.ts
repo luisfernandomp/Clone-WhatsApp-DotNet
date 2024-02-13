@@ -1,8 +1,10 @@
-import { Observable, catchError, of, take } from 'rxjs';
+import { catchError, of, take } from 'rxjs';
 import { UserService } from './../../../user.service';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, signal } from '@angular/core';
 import { User } from '../../../user.model';
-import { AsyncPipe, NgFor } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
+import UserStorageInfo from '../../../user-storage-info.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -22,11 +24,13 @@ export class LoginPageComponent implements OnInit {
           console.log(err);
           return of([]); // retorna um observable vazio
         }
-      ));
+      ),
+      take(1));
 
   @ViewChild('input', { static: true, read: ElementRef}) inputFile!: ElementRef;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService,
+    private router: Router) { }
 
   ngOnInit() {
 
@@ -72,11 +76,31 @@ export class LoginPageComponent implements OnInit {
 
     }
 
-    onImageButtonClicked(userId: string){
+    onImageButtonClicked(event: Event, userId: string){
+      event.stopPropagation();
       this.lastUserClicked = userId;
-
       this.inputFile.nativeElement.click();
     }
 
+    login(user: User) {
+      this.userService.login(user.id)
+      .pipe(take(1))
+      // Vai se desinscrever automaticamente,
+      // pegando somente o primeiro valor
+      .subscribe({
+        next: (resp) => {
+          this.userService.setCurrentUser({
+            ...user,
+            token: resp.token
+          });
+
+          this.router.navigate(['conversations']);
+        }
+      })
+    }
+
+    clear(){
+      this.inputFile.nativeElement.value = null;
+    }
 
 }

@@ -1,0 +1,12 @@
+<div class="container">
+
+    <button (click)="showModalChange.emit(false)">X</button>
+
+    @for (user of localUsers$ | async; track user.user.id){
+        <div class="user" (click)="createNewConversation(user.user)">
+            <img [src]="user.imageUrl" alt="">
+            <span>{{ user.user.name }}</span>
+        </div>
+    }
+</div>
+

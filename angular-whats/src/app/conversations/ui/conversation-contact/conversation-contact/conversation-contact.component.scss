@@ -1,0 +1,23 @@
+@use 'profile-image' as *;
+@use 'colors' as *;
+
+:host {
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $background-2;
+  }
+}
+
+span{
+  font-size: .9rem;
+}
+
+
+img {
+  @extend .profile-image;
+  margin-right: 10px;
+}

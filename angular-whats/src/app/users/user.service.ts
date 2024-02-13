@@ -1,9 +1,13 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, effect, signal } from "@angular/core";
 import { User } from "./user.model";
-import { Observable, catchError, forkJoin, map, of, pipe, switchMap, tap } from "rxjs";
+import { Observable, catchError, forkJoin, map, of, switchMap, tap } from "rxjs";
 import { environment } from "@@environment/environment";
 import { LocalDb } from "../local-db/local-db";
+import { AuthLoginResponse } from "./auth-login-response.model";
+import UserStorageInfo from "./user-storage-info.model";
+import { Router } from "@angular/router";
+import { UserImageModel } from "./user-image.model";
 
 @Injectable({
   providedIn: 'root'
@@ -18,10 +22,20 @@ export class UserService {
 
 
   */
-  private urlApi = `${environment.urlApi}`
-
-  constructor(private http: HttpClient){
-
+  private urlApi = `${environment.urlApi}/api`
+  private userInfo = signal<UserStorageInfo | null>(null);
+  private localDb = new LocalDb();
+  
+  constructor(private http: HttpClient,
+    private router: Router){
+    //Effect fica rastreando todos os signals que você coloca dentro dele
+    //Toda vez que o signal alterar ele vai executar o effect
+    effect(() => this.syncUserInfoLocalStorage());
+  }
+  
+  syncUserInfoLocalStorage(){
+    localStorage.setItem('UserData',
+      JSON.stringify(this.userInfo()))
   }
 
   getUsers() {
@@ -110,4 +124,58 @@ export class UserService {
       return this.http.get(`${this.urlApi}/user/${userId}/image`, { responseType: 'blob' });
     }
 
+    login(userId: string): Observable<AuthLoginResponse>{
+      return this.http.post<AuthLoginResponse>(`${this.urlApi}/auth/login`, { userId})
+    }
+
+    setCurrentUser(user: UserStorageInfo){
+      this.userInfo.set(user);
+    }
+
+    getUserInfoSignal(){
+      return this.userInfo.asReadonly();
+    }
+
+    isUserLogged(){
+      //Verifica se userInfo não é null
+      return !!this.userInfo();
+    }
+
+    trySyncLocalStorage(){
+      const localStorageData = localStorage.getItem('UserData');
+      
+      if(!localStorageData) return;
+
+      const userData: UserStorageInfo =
+        JSON.parse(localStorageData);
+
+      this.userInfo.set(userData);
+    }
+
+    logout(){
+      this.userInfo.set(null);
+
+      this.router.navigate(['login']);
+    }
+
+    getCurrentUserImage(){
+      return this.localDb
+        .getUserImage(this.userInfo()!.id)
+        .pipe(map(blob => 
+          !!blob ? URL.createObjectURL(blob) : ""));
+    }
+
+    getLocalUsers() {
+      //map do rxjs é usado para transformar um valor em outro
+      //map do js só itera sobre o array
+      return this.localDb.getUsers()
+      .pipe(map(users => users.map(u => ({
+            user: {
+              id: u.id,
+              name: u.name
+            },
+            imageUrl: u.imageBlob &&
+              URL.createObjectURL(u.imageBlob)
+          }) as UserImageModel)));
+    }
 }

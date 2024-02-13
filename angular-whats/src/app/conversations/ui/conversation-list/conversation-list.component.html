@@ -1,0 +1,11 @@
+<app-conversation-header />
+<div class="container">
+
+    @for (conversation of conversations$ | async; track conversation.id)
+    {
+        <div class="separator"></div>
+        <app-conversation-contact [conversation]="conversation" />
+    }
+
+    
+</div>

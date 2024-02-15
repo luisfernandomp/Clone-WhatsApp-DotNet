@@ -55,4 +55,9 @@ export class LocalDb {
   getLiveConversations(){
     return from(liveQuery(() => this.conversationTable.toArray()));
   }
+
+  getUserById(userId: string){
+    return defer(() => 
+    this.userTable.get(userId.toLowerCase()));
+  }
 }

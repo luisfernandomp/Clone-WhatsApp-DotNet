@@ -2,6 +2,7 @@ import Dexie, { liveQuery } from "dexie";
 import { LocalUserImage } from "./local-user-image.model";
 import { defer, from, map, of } from "rxjs";
 import { LocalConversation } from "./local-conversation.model";
+import { LocalConversationMessage } from "./local-conversation-message-model";
 
 /*
 wrapper -> criar uma estrutura em volta de uma classe,
@@ -18,6 +19,11 @@ export class LocalDb {
   private get conversationTable(){
     return this.localDb.table<LocalConversation>('conversations');
   }
+  
+  private get conversationMessageTable()
+  {
+    return this.localDb.table<LocalConversationMessage>('conversationMessages'); 
+  }
 
   constructor() {
     //Ao atualizar o version o banco de dados é recriado novamente
@@ -26,7 +32,8 @@ export class LocalDb {
     this.localDb.version(2)
       .stores({
         users: '&id, name, imageBlob',
-        conversations: '&id, userName'
+        conversations: '&id, userName',
+        conversationMessage: '++id, conversationUserId, message, mine, time'
       });
   }
 
@@ -59,5 +66,18 @@ export class LocalDb {
   getUserById(userId: string){
     return defer(() => 
     this.userTable.get(userId.toLowerCase()));
+  }
+
+  saveMessage(message: LocalConversationMessage){
+    return from(this.conversationMessageTable.add(message)); 
+    //From -> não precisa de subscribe 
+  }
+
+  getMessagesHistoryByCoversationUserId(conversationUserId: string){
+    return defer(() =>
+            this.conversationMessageTable
+            .where('conversationUserId')
+            .equalsIgnoreCase(conversationUserId)
+            .toArray());
   }
 }

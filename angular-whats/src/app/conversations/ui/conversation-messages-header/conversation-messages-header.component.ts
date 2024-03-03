@@ -1,7 +1,8 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { map } from 'rxjs';
+import { map, switchMap } from 'rxjs';
+import { UserService } from '../../../users/user.service';
 
 @Component({
   selector: 'app-conversation-messages-header',
@@ -13,13 +14,12 @@ import { map } from 'rxjs';
 export class ConversationMessagesHeaderComponent {
   
   private activatedRoute = inject(ActivatedRoute)
+  private userService = inject(UserService);
   
-  protected userId$ 
+  protected user$ 
     = this.activatedRoute.paramMap  
     .pipe(
-      map(params => params.get('userId'))
-      //O próximo pipe pega o valor do anterior
-    );
-
-
+      map(params => params.get('userId')),
+      switchMap(userId => 
+        this.userService.getLocalUserById(userId!)));
 }

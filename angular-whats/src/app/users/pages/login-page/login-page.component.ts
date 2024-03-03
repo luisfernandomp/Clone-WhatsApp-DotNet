@@ -1,9 +1,8 @@
 import { catchError, of, take } from 'rxjs';
-import { UserService } from './../../../user.service';
+import { UserService } from './../../user.service';
 import { Component, ElementRef, OnInit, ViewChild, signal } from '@angular/core';
-import { User } from '../../../user.model';
+import { User } from '../../user.model';
 import { AsyncPipe } from '@angular/common';
-import UserStorageInfo from '../../../user-storage-info.model';
 import { Router } from '@angular/router';
 
 @Component({

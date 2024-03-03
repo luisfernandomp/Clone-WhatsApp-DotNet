@@ -178,4 +178,21 @@ export class UserService {
               URL.createObjectURL(u.imageBlob)
           }) as UserImageModel)));
     }
+
+    getLocalUserById(userId: string){
+      return this.localDb.getUserById(userId)
+      .pipe(
+        map(localUserImage => {
+          const userImage = {
+            user: {
+              id: localUserImage!.id,
+              name: localUserImage!.name,
+            },
+            imageUrl: !!localUserImage?.imageBlob ? URL.createObjectURL(localUserImage.imageBlob) : null
+          } as UserImageModel;
+
+          return userImage;
+        })
+      );
+    }
 }

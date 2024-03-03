@@ -34,8 +34,13 @@ export class ConversationService{
             
         );
     }
-}
 
-function forkJoins(userImageBlobs: import("rxjs").Observable<Blob | null>[]): any {
-    throw new Error("Function not implemented.");
+    publishMessage(convesationUserId: string, message: string){
+        this.localDb.saveMessage({
+            time: new Date(),
+            message: message,
+            mine: true,
+            conversationUserId: convesationUserId
+        });
+    }
 }

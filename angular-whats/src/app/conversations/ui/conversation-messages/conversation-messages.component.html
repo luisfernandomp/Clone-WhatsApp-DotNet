@@ -1,0 +1,12 @@
+<div class="messages" #scrollPanel>
+    @for(message of messages; track $index)
+    {
+        <app-message [message]="message" />
+    }
+
+</div>
+<input type="text"
+    placeholder="Pressione Enter para enviar..."
+    [(ngModel)]="inputMessage"
+    (keyup.enter)="sendMessage()"
+    />

@@ -1,6 +1,6 @@
-import { ConversationMessagesPageComponent } from './conversations/pages/conversation-messages-page/conversation-messages-page/conversation-messages-page.component';
+import { ConversationMessagesPageComponent } from './conversations/pages/conversation-messages-page/conversation-messages-page.component';
 import { isUserLoggerGuard } from './guards/is-user-logged.can-activate.guard';
-import { LoginPageComponent } from './users/pages/login-page/login-page/login-page.component';
+import { LoginPageComponent } from './users/pages//login-page/login-page.component';
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [

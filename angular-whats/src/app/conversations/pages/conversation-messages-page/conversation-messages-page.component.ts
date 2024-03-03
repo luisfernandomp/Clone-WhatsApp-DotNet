@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ConversationMessagesHeaderComponent } from '../../../ui/conversation-messages-header/conversation-messages-header/conversation-messages-header.component';
-import { ConversationMessagesComponent } from '../../../ui/conversation-messages/conversation-messages/conversation-messages.component';
+import { ConversationMessagesHeaderComponent } from '../../ui/conversation-messages-header/conversation-messages-header.component';
+import { ConversationMessagesComponent } from '../../ui/conversation-messages/conversation-messages.component';
 
 @Component({
   selector: 'app-conversation-messages-page',

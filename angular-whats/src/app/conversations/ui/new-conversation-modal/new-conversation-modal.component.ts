@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
-import { UserService } from '../../../../users/user.service';
+import { UserService } from '../../../users/user.service';
 import { AsyncPipe } from '@angular/common';
 import { map, take } from 'rxjs';
-import { User } from '../../../../users/user.model';
-import { ConversationService } from '../../../conversation.service';
+import { User } from '../../../users/user.model';
+import { ConversationService } from '../../conversation.service';
 
 @Component({
   selector: 'app-new-conversation-modal',
